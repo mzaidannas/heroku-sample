@@ -22,8 +22,8 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: localhost
   port: 5432
-  username: <%= ENV.fetch("PG_USER") %>
-  password: <%= ENV.fetch("PG_PASSWORD") %>
+  username: <%= ENV.fetch("PG_USER") { 'postgres' } %>
+  password: <%= ENV.fetch("PG_PASSWORD") { '' } %>
 
 development:
   <<: *default
@@ -84,6 +84,4 @@ test:
 #
 production:
   <<: *default
-  database: sample_production
-  username: sample
-  password: <%= ENV['SAMPLE_DATABASE_PASSWORD'] %>
+  url: <%= ENV.fetch("DATABASE_URL") %>

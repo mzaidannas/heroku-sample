@@ -22,3 +22,29 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+
+* Dokku Deployment
+
+** On Remote
+dokku apps:create sample
+sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
+dokku postgres:create sample_production
+dokku postgres:link sample_production sample
+
+** On Local
+git remote add dokku dokku@$REMOTE_IP:sample
+cat ~/.ssh/id_rsa.pub | ssh root@$REMOTE_IP "sudo sshcommand acl-add dokku dokku"
+git push dokku master
+
+dokku postgres:import sample_production < dump.postgres.sql
+dokku postgres:help
+
+dokku domains:add sample domainname.com
+dokku domains sample
+dokku domains:report
+dokku domains:add-global sample domainname.com
+dokku domains:report
+dokku domains:enable sample
+dokku domains:report
+dokku deploy sample
