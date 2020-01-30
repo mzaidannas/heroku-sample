@@ -30,34 +30,42 @@ Things you may want to cover:
 
 ### Install Dokku
 
-* wget -nv -O - https://get.docker.com/ | sh
-* wget -nv -O - https://packagecloud.io/dokku/dokku/gpgkey | apt-key add -
-* export SOURCE="https://packagecloud.io/dokku/dokku/ubuntu/"
-* export OS_ID="$(lsb_release -cs 2>/dev/null || echo "trusty")"
-* echo "utopicvividwilyxenialyakketyzestyartfulbionic" | grep -q "$OS_ID" || OS_ID="trusty"
-* echo "deb $SOURCE $OS_ID main" | tee /etc/apt/sources.list.d/dokku.list
-* apt-get update
-* apt-get install dokku
-* dokku plugin:install-dependencies --core # run with root!
+```bash
+wget -nv -O - https://get.docker.com/ | sh
+wget -nv -O - https://packagecloud.io/dokku/dokku/gpgkey | apt-key add -
+export SOURCE="https://packagecloud.io/dokku/dokku/ubuntu/"
+export OS_ID="$(lsb_release -cs 2>/dev/null || echo "trusty")"
+echo "utopicvividwilyxenialyakketyzestyartfulbionic" | grep -q "$OS_ID" || OS_ID="trusty"
+echo "deb $SOURCE $OS_ID main" | tee /etc/apt/sources.list.d/dokku.list
+apt-get update
+apt-get install dokku
+dokku plugin:install-dependencies --core # run with root!
+```
 
 ### Install dokku postgres plugin
 
-* dokku apps:create sample
-* sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
-* dokku postgres:create sample_production
-* dokku postgres:link sample_production sample
-
+```bash
+dokku apps:create sample
+sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
+dokku postgres:create sample_production
+dokku postgres:link sample_production sample
+```
 ### On Local
 
-* git remote add dokku dokku@$REMOTE_IP:sample
-* cat ~/.ssh/id_rsa.pub | ssh root@$REMOTE_IP "sudo sshcommand acl-add dokku dokku"
-* git push dokku master
-
+```bash
+git remote add dokku dokku@$REMOTE_IP:sample
+cat ~/.ssh/id_rsa.pub | ssh root@$REMOTE_IP "sudo sshcommand acl-add dokku dokku"
+git push dokku master
+```
 ### Import existing db dump
+
+```bash
 dokku postgres:import sample_production < dump.postgres.sql
 dokku postgres:help
-
+```
 ### Set default domain
+
+```bash
 dokku domains:add sample domainname.com
 dokku domains sample
 dokku domains:report
@@ -66,3 +74,4 @@ dokku domains:report
 dokku domains:enable sample
 dokku domains:report
 dokku deploy sample
+```
