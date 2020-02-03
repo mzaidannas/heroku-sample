@@ -32,14 +32,14 @@ Things you may want to cover:
 
 ```bash
 wget -nv -O - https://get.docker.com/ | sh
-wget -nv -O - https://packagecloud.io/dokku/dokku/gpgkey | apt-key add -
+wget -nv -O - https://packagecloud.io/dokku/dokku/gpgkey | sudo apt-key add -
 export SOURCE="https://packagecloud.io/dokku/dokku/ubuntu/"
 export OS_ID="$(lsb_release -cs 2>/dev/null || echo "trusty")"
 echo "utopicvividwilyxenialyakketyzestyartfulbionic" | grep -q "$OS_ID" || OS_ID="trusty"
-echo "deb $SOURCE $OS_ID main" | tee /etc/apt/sources.list.d/dokku.list
-apt-get update
-apt-get install dokku
-dokku plugin:install-dependencies --core # run with root!
+echo "deb $SOURCE $OS_ID main" | sudo tee /etc/apt/sources.list.d/dokku.list
+sudo apt-get update
+sudo apt-get install dokku
+sudo dokku plugin:install-dependencies --core # run with root!
 ```
 
 ### Install dokku postgres plugin
@@ -50,11 +50,19 @@ sudo dokku plugin:install https://github.com/dokku/dokku-postgres.git postgres
 dokku postgres:create sample_production
 dokku postgres:link sample_production sample
 ```
+
+### Install dokku redis plugin
+```bash
+sudo dokku plugin:install https://github.com/dokku/dokku-redis.git redis
+dokku redis:create sample_redis
+dokku redis:link sample_redis sample
+```
+
 ### On Local
 
 ```bash
 git remote add dokku dokku@$REMOTE_IP:sample
-cat ~/.ssh/id_rsa.pub | ssh root@$REMOTE_IP "sudo sshcommand acl-add dokku dokku"
+cat ~/.ssh/id_rsa.pub | ssh -i pemfile.pem ubuntu@$REMOTE_IP "sudo sshcommand acl-add dokku dokku"
 git push dokku master
 ```
 ### Import existing db dump
