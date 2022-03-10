@@ -1,5 +1,14 @@
 {
   "name": "sample",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "autoprefixer": "^10.4.2",
+    "esbuild": "^0.14.25",
+    "postcss": "^8.4.8",
+    "tailwindcss": "^3.0.23"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --outdir=app/assets/builds",
+    "build:css": "tailwindcss -i ./app/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+  }
 }
