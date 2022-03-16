@@ -9,6 +9,8 @@ gem 'rails', '~> 7.0.2'
 gem 'pg', '>= 1.3.3', '< 2.0'
 # Use Puma as the app server
 gem 'puma', '~> 5.6.2'
+# Demonization restored for puma 5+
+gem 'puma-daemon'
 
 # New rails assets pipeline
 gem 'propshaft'
