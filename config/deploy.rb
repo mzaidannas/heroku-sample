@@ -36,7 +36,6 @@ task :remote_environment do
   # If you're using rbenv, use this to load the rbenv environment.
   # Be sure to commit your .ruby-version or .rbenv-version to your repository.
   invoke :'rbenv:load'
-  command %{nodenv rehash}
 
   # For those using RVM, use this to load an RVM version@gemset.
   # invoke :'rvm:use', 'ruby-3.1.1@default'
@@ -46,6 +45,7 @@ end
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
   command %{rbenv install 3.1.1 --skip-existing}
+  command %{nodenv install 17.7.1 --skip-existing}
   # command %{rvm install ruby-3.1.1}
   # command %{gem install bundler}
 
