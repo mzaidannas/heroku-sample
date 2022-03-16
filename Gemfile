@@ -7,10 +7,11 @@ ruby '3.1.1'
 gem 'rails', '~> 7.0.2'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 1.3.3', '< 2.0'
+# Demonization restored for puma 5+
+gem 'puma-daemon', require: false
 # Use Puma as the app server
 gem 'puma', '~> 5.6.2'
-# Demonization restored for puma 5+
-gem 'puma-daemon'
+
 
 # New rails assets pipeline
 gem 'propshaft'
