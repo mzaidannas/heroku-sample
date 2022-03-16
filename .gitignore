@@ -29,4 +29,8 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
+# Environment Vairable file
 .env
+
+# Database Configuration File
+config/database.yml

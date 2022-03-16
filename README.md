@@ -34,8 +34,8 @@ Things you may want to cover:
 wget -nv -O - https://get.docker.com/ | sh
 wget -nv -O - https://packagecloud.io/dokku/dokku/gpgkey | sudo apt-key add -
 export SOURCE="https://packagecloud.io/dokku/dokku/ubuntu/"
-export OS_ID="$(lsb_release -cs 2>/dev/null || echo "trusty")"
-echo "utopicvividwilyxenialyakketyzestyartfulbionic" | grep -q "$OS_ID" || OS_ID="trusty"
+export OS_ID="$(lsb_release -cs 2>/dev/null || echo "focal")"
+echo "utopicvividwilyxenialyakketyzestyartfulbionicfocal" | grep -q "$OS_ID" || OS_ID="focal"
 echo "deb $SOURCE $OS_ID main" | sudo tee /etc/apt/sources.list.d/dokku.list
 sudo apt-get update
 sudo apt-get install dokku

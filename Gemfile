@@ -26,10 +26,8 @@ gem "hiredis"
 # Background Processing
 gem "sidekiq"
 
-group :development, :test do
-  # Use environment vairables to set global configs
-  gem "dotenv-rails"
-end
+# Use environment vairables to set global configs
+gem "dotenv-rails"
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
@@ -38,8 +36,8 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.1'
-  # Use Capistrano for deployment
-  gem 'capistrano-rails'
+  # Use Mina for deployment
+  gem 'mina'
 end
 
 group :test do
