@@ -3,6 +3,7 @@ require 'mina/rails'
 require 'mina/git'
 require 'mina/rbenv'  # for rbenv support. (https://rbenv.org)
 # require 'mina/rvm'    # for rvm support. (https://rvm.io)
+require 'mina/puma'
 
 # Basic settings:
 #   domain       - The hostname to SSH to.
@@ -15,7 +16,7 @@ set :rails_env, 'production'
 set :application_name, 'heroku-sample'
 set :domain, 'heroku-sample.mzaidannas.me'
 set :deploy_to, '/home/ubuntu/heroku-sample'
-set :repository, 'git://github.com:mzaidannas/heroku-sample.git'
+set :repository, 'https://github.com/mzaidannas/heroku-sample.git'
 set :branch, 'master'
 
 # Optional settings:
@@ -26,7 +27,7 @@ set :branch, 'master'
 # Shared dirs and files will be symlinked into the app-folder by the 'deploy:link_shared_paths' step.
 # Some plugins already add folders to shared_dirs like `mina/rails` add `public/assets`, `vendor/bundle` and many more
 # run `mina -d` to see all folders and files already included in `shared_dirs` and `shared_files`
-set :shared_dirs, fetch(:shared_dirs, []).push('public/assets')
+set :shared_dirs, fetch(:shared_dirs, []).push('public/assets', 'tmp/pids', 'tmp/sockets')
 set :shared_files, fetch(:shared_files, []).push('config/database.yml', '.env')
 
 # This task is the environment that is loaded for all remote run commands, such as
@@ -46,6 +47,12 @@ task :setup do
   command %{rbenv install 3.1.1 --skip-existing}
   # command %{rvm install ruby-3.1.1}
   # command %{gem install bundler}
+
+  # Puma needs a place to store its pid file and socket file.
+  command %{mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/sockets"}
+  command %{chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/sockets"}
+  command %{mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/pids"}
+  command %{chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/pids"}
 end
 
 desc "Deploys the current version to the server."
@@ -65,7 +72,7 @@ task :deploy do
     on :launch do
       in_path(fetch(:current_path)) do
         command %{mkdir -p tmp/}
-        invoke :'puma:restart'
+        invoke :'puma:phased_restart'
       end
     end
   end

@@ -38,6 +38,8 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.1'
   # Use Mina for deployment
   gem 'mina'
+  # Mina puma commands
+  gem 'mina-puma'
 end
 
 group :test do

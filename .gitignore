@@ -34,3 +34,6 @@
 
 # Database Configuration File
 config/database.yml
+
+# Ignore credential keyfiles
+/config/credentials/*.key
