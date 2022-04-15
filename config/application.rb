@@ -32,5 +32,7 @@ module Sample
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.assets.paths = ['app/assets/builds', 'app/assets/images']
+
+    Rails.application.config.active_support.isolation_level = :fiber
   end
 end
