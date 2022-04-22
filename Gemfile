@@ -15,6 +15,8 @@ gem 'puma', '~> 5.6.2'
 
 # New rails assets pipeline
 gem 'propshaft'
+# Assets brotli compression
+gem 'brotli'
 
 # CSS and JS bundling
 gem 'jsbundling-rails'

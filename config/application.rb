@@ -31,8 +31,10 @@ module Sample
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    config.assets.paths = ['app/assets/builds', 'app/assets/images']
-
+    # Use fiber level connection pool of active record
     Rails.application.config.active_support.isolation_level = :fiber
+
+    # Set propshaft assets paths
+    config.assets.paths = ['app/assets/builds', 'app/assets/images']
   end
 end
