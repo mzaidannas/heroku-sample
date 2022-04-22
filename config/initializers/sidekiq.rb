@@ -1,5 +1,5 @@
 Sidekiq.configure_server do |config|
-  config.redis = { url: ENV["REDIS_URL"], driver: "hiredis" }
+  config.redis = { url: ENV.fetch("REDIS_URL") { "redis://localhost:6379/0" } }
 
   # to guarantee messages are delivered with 5 seconds, default is 15
   config.average_scheduled_poll_interval = 5
@@ -8,5 +8,5 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: ENV["REDIS_URL"] }
+  config.redis = { url: ENV.fetch("REDIS_URL") { "redis://localhost:6379/0" } }
 end
