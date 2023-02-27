@@ -126,6 +126,8 @@ GEM
     mina-puma (1.1.0)
       mina (~> 1.2.0)
       puma (>= 2.13)
+    mina-sidekiq (1.1.0)
+      mina (>= 1.0.2)
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
     minitest (5.17.0)
@@ -233,6 +235,7 @@ DEPENDENCIES
   listen (>= 3.7, < 4)
   mina
   mina-puma
+  mina-sidekiq
   pg (>= 1.3.3, < 2.0)
   propshaft
   puma
