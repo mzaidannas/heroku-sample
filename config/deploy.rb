@@ -87,7 +87,7 @@ task :setup do
   command %{touch "#{fetch(:shared_path)}/.env"}
 
   # Enable user level systemd services support for sidekiq
-  command %(loginctl enable-linger $USER)
+  command %(loginctl enable-linger ubuntu)
   invoke :'sidekiq:install'
 end
 
