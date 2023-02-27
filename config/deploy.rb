@@ -4,6 +4,7 @@ require 'mina/git'
 require 'mina/rbenv'  # for rbenv support. (https://rbenv.org)
 # require 'mina/rvm'    # for rvm support. (https://rvm.io)
 require 'mina/puma'
+require 'mina/sidekiq'
 
 # Basic settings:
 #   domain       - The hostname to SSH to.
@@ -24,10 +25,15 @@ set :branch, 'master'
   set :port, '22'              # SSH port number.
   set :forward_agent, true     # SSH forward_agent.
 
+
+# Mina sidekiq settings
+set :init_system, :systemd
+set :service_unit_path, '/home/ubuntu/.config/systemd/user'
+
 # Shared dirs and files will be symlinked into the app-folder by the 'deploy:link_shared_paths' step.
 # Some plugins already add folders to shared_dirs like `mina/rails` add `public/assets`, `vendor/bundle` and many more
 # run `mina -d` to see all folders and files already included in `shared_dirs` and `shared_files`
-set :shared_dirs, fetch(:shared_dirs, []).push('public/assets', 'tmp/pids', 'tmp/sockets')
+set :shared_dirs, fetch(:shared_dirs, []).push('tmp/pids', 'tmp/sockets')
 set :shared_files, fetch(:shared_files, []).push('config/database.yml', '.env')
 
 set :nodenv_path, '$HOME/.nodenv'
@@ -55,22 +61,34 @@ task :remote_environment do
   invoke :'nodenv:load'
 
   # For those using RVM, use this to load an RVM version@gemset.
-  # invoke :'rvm:use', 'ruby-3.1.1@default'
+  # invoke :'rvm:use', 'ruby-3.2.0@default'
 end
 
 # Put any custom commands you need to run at setup
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
-  command %{rbenv install 3.1.1 --skip-existing}
-  command %{nodenv install 17.7.1 --skip-existing}
-  # command %{rvm install ruby-3.1.1}
+  command %(curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash)
+  command %(git -C ~/.rbenv/plugins/ruby-build pull)
+  command %(rbenv install 3.2.0 --skip-existing)
+  command %(rbenv local 3.2.0)
+  command %(rbenv exec gem install bundler -v 2.4.1)
+  command %(curl -fsSL https://raw.githubusercontent.com/nodenv/nodenv-installer/master/bin/nodenv-installer | bash)
+  command %(git -C ~/.nodenv/plugins/node-build pull)
+  command %(nodenv install 18.9.0 --skip-existing)
+  command %(nodenv local 18.9.0)
+  command %(nodenv exec npm install -g yarn)
+
+  # command %{rvm install ruby-3.2.0}
   # command %{gem install bundler}
 
   # Puma needs a place to store its pid file and socket file.
-  command %{mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/sockets"}
-  command %{chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/sockets"}
-  command %{mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/pids"}
-  command %{chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/pids"}
+  command %{mkdir -p "#{fetch(:shared_path)}/config"}
+  command %{touch "#{fetch(:shared_path)}/config/database.yml"}
+  command %{touch "#{fetch(:shared_path)}/.env"}
+
+  # Enable user level systemd services support for sidekiq
+  command %(loginctl enable-linger $USER)
+  invoke :'sidekiq:install'
 end
 
 desc "Deploys the current version to the server."
@@ -81,8 +99,10 @@ task :deploy do
     # Put things that will set up an empty directory into a fully set-up
     # instance of your project.
     invoke :'git:clone'
+    invoke :'sidekiq:quiet'
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
+    invoke :'rails:db_create'
     invoke :'rails:db_migrate'
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
@@ -91,6 +111,7 @@ task :deploy do
       in_path(fetch(:current_path)) do
         command %{mkdir -p tmp/}
       invoke :'puma:restart'
+      invoke :'sidekiq:restart'
       end
     end
   end
