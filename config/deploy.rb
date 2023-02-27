@@ -29,6 +29,7 @@ set :branch, 'master'
 # Mina sidekiq settings
 set :init_system, :systemd
 set :service_unit_path, '/home/ubuntu/.config/systemd/user'
+set :bundler_path, '/home/ubuntu/.rbenv/shims/bundler'
 
 # Shared dirs and files will be symlinked into the app-folder by the 'deploy:link_shared_paths' step.
 # Some plugins already add folders to shared_dirs like `mina/rails` add `public/assets`, `vendor/bundle` and many more
@@ -89,6 +90,7 @@ task :setup do
   # Enable user level systemd services support for sidekiq
   command %(loginctl enable-linger ubuntu)
   invoke :'sidekiq:install'
+  command %(systemctl --user daemon-reload)
 end
 
 desc "Deploys the current version to the server."
@@ -99,7 +101,6 @@ task :deploy do
     # Put things that will set up an empty directory into a fully set-up
     # instance of your project.
     invoke :'git:clone'
-    invoke :'sidekiq:quiet'
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
     invoke :'rails:db_create'
