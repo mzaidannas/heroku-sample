@@ -31,7 +31,7 @@ Things you may want to cover:
 
 ```bash
 # Libraries, compilers and development files required
-sudo apt install -y build-essential git git-lfs openssl libssl-dev ruby ruby-build libmysqlclient-dev libpq-dev libvips42 libxml2-dev curl ca-certificates gnupg
+sudo apt install -y build-essential git git-lfs openssl libssl-dev ruby ruby-build libmysqlclient-dev libpq-dev libvips42 libxml2-dev curl ca-certificates gnupg libyaml-dev libffi-dev libreadline-dev
 
 # Database services
 # Postgresql
